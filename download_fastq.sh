@@ -1,36 +1,34 @@
 #!/bin/bash
 
-# Path to your accession list
-accession_list="accession_list.txt"
-# Path to your s3 bucket where you want your fastq files to end up
-s3_loc="s3://nao-harmon/test/raw/"
-# Number of cores to use
-n=4
+accession_list="accession_list.txt" # Path to your accession list
+n=4 # Number of cores to use
 
-### Function to process each accession
+
+## Function to process each accession
 process_accession() {
+
+# Path to your s3 bucket where you want your fastq files to end up
+s3_loc="s3://nao-harmon/test/raw"
 
 local accession=$1
 echo -e "\n Starting ${accession}\n"
 
-# Download the SRA file
 echo "Prefetching SRA file"
 prefetch $accession
 
-# Convert SRA to FASTQ
 echo "Converting SRA to FASTQ"
 fastq-dump --split-3 --gzip $accession 
 
-# Delete the SRA folder to save space
-echo "Deleteing SRA folder"
 rm -rf ./$accession
 
 # Move files to s3 bucket
-echo "Moving forward read to s3 bucket"
-aws s3 cp ${accession}_1.fastq.gz ${s3_loc}/ 
+echo "Moving forward/reverse read to s3 bucket"
 
-echo "Moving reverse read to s3 bucket"
-aws s3 cp ${accession}_2.fastq.gz ${s3_loc}/ 
+aws s3 cp ./${accession}_1.fastq.gz ${s3_loc}/${accession}_1.fastq.gz
+rm ./${accession}_1.fastq.gz
+
+aws s3 cp ./${accession}_2.fastq.gz ${s3_loc}/${accession}_2.fastq.gz
+rm ./${accession}_2.fastq.gz
 
 }
 
