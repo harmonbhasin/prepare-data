@@ -2,11 +2,11 @@
 #
 # Path to SRA run table
 metadata_file='./sraruntable.csv'
-library_csv='./library.csv'
+library_csv='./libraries.csv'
 acc_file='./accession_list.txt'
 
 # Create library.csv file
-echo "library,sample " > ${library_csv}
+echo "library,sample" > ${library_csv}
 
 # Assumes SSR is in the first column, and assign sample and library to be same
 cut -d',' -f1 ${metadata_file} | tail -n +2 | awk '{print $1","$1}' >> ${library_csv}

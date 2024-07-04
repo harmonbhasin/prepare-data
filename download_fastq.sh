@@ -8,7 +8,7 @@ n=4 # Number of cores to use
 process_accession() {
 
 # Path to your s3 bucket where you want your fastq files to end up
-s3_loc="s3://nao-harmon/test/raw"
+s3_loc="s3://nao-harmon/cebriamendoza2021/raw"
 
 local accession=$1
 echo -e "\n Starting ${accession}\n"
